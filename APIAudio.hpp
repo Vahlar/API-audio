@@ -9,14 +9,6 @@
 #include <string.h>
 #include <condition_variable>
 
-
-//class APIAudio{
-
-//public:
-//    APIAudio();
-//    ~APIAudio(void);
-
 void lecture();
 void ecriture();
 
-//};
