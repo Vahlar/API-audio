@@ -2,6 +2,8 @@
 
 void lecture(){
 
+    std::cout << "debut thread lecture" << std::endl;
+
     SNDFILE *inFile = nullptr;
     SNDFILE *outFile = nullptr;
     SF_INFO sfInfo;
@@ -32,10 +34,10 @@ void lecture(){
 
     float *buff = new float[frameSize];
 
-    while ((frameIn = sf_read_raw(inFile, buff, frameSize)) > 0){
+    while ((frameIn = sf_read_float(inFile, buff, frameSize)) > 0){
 
         std::cout << "frameIn lecture: " << frameIn << std::endl;
-        frameOut = sf_write_raw(outFile, buff, frameSize);
+        frameOut = sf_write_float(outFile, buff, frameSize);
         sf_write_sync(outFile);
         std::cout << "frameOut lecture: " << frameOut << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));

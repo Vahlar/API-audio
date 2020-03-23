@@ -2,6 +2,8 @@
 
 void ecriture(){
 
+    std::cout << "debut thread ecriture" << std::endl;
+
     SNDFILE *inFile = nullptr;
     SNDFILE *outFile = nullptr;
     SF_INFO sfInfo;
@@ -14,21 +16,18 @@ void ecriture(){
     const char *out;
     out = pathOut.c_str();
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
     inFile = sf_open(in, SFM_READ, &sfInfo);
     if(inFile == nullptr){
         std::cout << "erreur infile eciture" << std::endl;
         exit(1);
     }
-
-
     outFile = sf_open(out, SFM_WRITE, &sfInfo);
     if(outFile == nullptr){
         std::cout << "erreur outfile ecriture" << std::endl;
         exit(1);
     }
-
     int sampleRate = sfInfo.samplerate;
     int frameSize = sampleRate/2;
     int frameIn = 0;
@@ -37,7 +36,7 @@ void ecriture(){
 
     float *buff = new float[frameSize];
 
-    while ((frameIn = sf_read_raw(inFile, buff, frameSize)) > 0){
+    while ((frameIn = sf_read_float(inFile, buff, frameSize)) > -1){
 
         totFrames += frameIn;
         if(frameIn < frameSize){
@@ -50,7 +49,7 @@ void ecriture(){
             sf_seek(inFile, totFrames, 0);
         }
         std::cout << "frameIn ecriture: " << frameIn << std::endl;
-        frameOut = sf_write_raw(outFile, buff, frameSize);
+        frameOut = sf_write_float(outFile, buff, frameIn);
         sf_write_sync(outFile);
         std::cout << "frameOut ecriture: " << frameOut << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
