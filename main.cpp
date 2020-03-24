@@ -5,6 +5,7 @@ using namespace std;
 
 int main(int argc, char* argv[]){
 
+    //lancement des fonctions dans 2 threads differents
     thread t1(lecture);
     thread t2(ecriture);
 
