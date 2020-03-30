@@ -34,6 +34,11 @@ void ecriture(){
         std::cout << "erreur outfile ecriture" << std::endl;
         exit(1);
     }
+    //set ogg page latency
+    double latency = 100;
+    double* pLatency = &latency;
+    sf_command(outFile, SFC_SET_OGG_PAGE_LATENCY_MS, pLatency, sizeof (pLatency));
+
     //initialisation des variables
     int sampleRate = sfInfoIn.samplerate;
     int frameSize = sampleRate/2;
@@ -73,6 +78,7 @@ void ecriture(){
         }
         if(k > 0){
             std::cout << "reprise ecriture" << std::endl;
+            totFrames += frameIn;
             k = 0;
         }
         //ecriture des datas

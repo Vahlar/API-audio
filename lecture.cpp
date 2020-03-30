@@ -40,6 +40,11 @@ void lecture(){
         std::cout << "erreur outfile lecture" << std::endl;
         exit(1);
     }
+    //set ogg page latency
+    double latency = 100;
+    double* pLatency = &latency;
+    sf_command(outFile, SFC_SET_OGG_PAGE_LATENCY_MS, pLatency, sizeof (pLatency));
+
     //initialisation des variables
     int sampleRate = sfInfoIn.samplerate;
     int frameSize = sampleRate/2;
