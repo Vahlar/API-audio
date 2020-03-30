@@ -17,9 +17,10 @@ find_package(Speex REQUIRED)
 
 add_executable(API-Audio
     main.cpp
-    APIAudio.hpp
     lecture.cpp
+    lecture.hpp
     ecriture.cpp
+    ecriture.hpp
     )
 target_include_directories(API-Audio
     PUBLIC

@@ -1,8 +1,9 @@
-#include "APIAudio.hpp"
+#include "ecriture.hpp"
 
-void ecriture(){
+void ecriture(std::chrono::system_clock::time_point* pTime1, std::chrono::system_clock::time_point* pTime2){
 
     std::cout << "debut thread ecriture" << std::endl;
+    int i = 0;
     int k = 0;
 
     //creation des pointeurs sndfile et de la structure info
@@ -20,13 +21,14 @@ void ecriture(){
     const char *out;
     out = pathOut.c_str();
 
-    //calcule du temps avant que infFile soit disponible
-    auto start = std::chrono::system_clock::now();
+    //on essaie d'ouvrir le fichier jusqu'à ce qu'il soit disponible
     do{
         inFile = sf_open(in, SFM_READ, &sfInfoIn);
+        std::this_thread::sleep_for(std::chrono::milliseconds(0));
     }while(inFile == nullptr);
-    auto end = std::chrono::system_clock::now();
-    std::chrono::duration<double> latence = end - start;
+
+    //prise tu temps t1
+    *pTime1 = std::chrono::system_clock::now();
 
     //creation du fichier de sortie
     outFile = sf_open(out, SFM_WRITE, &sfInfoIn);
@@ -35,7 +37,7 @@ void ecriture(){
         exit(1);
     }
     //set ogg page latency
-    double latency = 100;
+    double latency = 1000;
     double* pLatency = &latency;
     sf_command(outFile, SFC_SET_OGG_PAGE_LATENCY_MS, pLatency, sizeof (pLatency));
 
@@ -49,11 +51,14 @@ void ecriture(){
     //creation du buffer pour les datas
     float *buff = new float[frameSize];
 
-    std::cout << "debut ecriture, latence: " << (latence.count())*1000 << "ms" << std::endl;
-
     //lecture en continue du fichier
     while ((frameIn = sf_read_float(inFile, buff, frameSize)) > -1){
 
+        //prise du temps t2
+        if((i == 0) && (frameIn == frameSize)){
+            *pTime2 = std::chrono::system_clock::now();
+            i++;
+        }
         totFrames += frameIn;
 
         //tant qu'il n'y a pas de datas supplementaire
@@ -62,6 +67,12 @@ void ecriture(){
             k++;
             if(k == 1 || (k % 10) == 0){
                 std::cout << "waiting..." << std::endl;
+            }
+            //on arrete d'attendre au bout d'un certain temps
+            if(k == 10){
+                std::cout << "time out, fin ecriture" << std::endl;
+                delete [] buff;
+                return;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
@@ -85,6 +96,4 @@ void ecriture(){
         frameOut = sf_write_float(outFile, buff, frameIn);
         sf_write_sync(outFile);
     }
-    std::cout << "fin ecriture" << std::endl;
-    delete [] buff;
 }

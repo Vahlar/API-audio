@@ -1,6 +1,6 @@
-#include "APIAudio.hpp"
+#include "lecture.hpp"
 
-void lecture(){
+void lecture(std::chrono::system_clock::time_point *pTime0){
 
     std::cout << "debut thread lecture" << std::endl;
     int i = 0;
@@ -32,7 +32,7 @@ void lecture(){
     sfInfoOut = sfInfoIn;
 
     //le format d'ecriture quand à lui est ogg opus
-    sfInfoOut.format = 2097252;
+    sfInfoOut.format = (SF_FORMAT_OPUS | SF_FORMAT_OGG);
 
     //creation du fichier de sortie
     outFile = sf_open(out, SFM_WRITE, &sfInfoOut);
@@ -41,7 +41,7 @@ void lecture(){
         exit(1);
     }
     //set ogg page latency
-    double latency = 100;
+    double latency = 1000;
     double* pLatency = &latency;
     sf_command(outFile, SFC_SET_OGG_PAGE_LATENCY_MS, pLatency, sizeof (pLatency));
 
@@ -50,19 +50,34 @@ void lecture(){
     int frameSize = sampleRate/2;
     int frameIn = 0;
     int frameOut = 0;
+    int totFrames = 0;
 
     //creation du buffer pour les datas
     float *buff = new float[frameSize];
 
     //lecture du fichier jusqu'à la fin
     while ((frameIn = sf_read_float(inFile, buff, frameSize)) > 0){
+
         if(i == 0){
+            //prise tu temps t0
+            *pTime0 = std::chrono::system_clock::now();
             std::cout << "lecture en cours" << std::endl;
             i++;
+        }
+        totFrames += frameIn;
+
+        //on arrete la pour ce test
+        if(totFrames > 16000){
+            std::cout << "fin test, fin lecture" << std::endl;
+            delete [] buff;
+            return;
         }
         //ecriture des datas
         frameOut = sf_write_float(outFile, buff, frameSize);
         sf_write_sync(outFile);
+
+        //toutes les 500ms on écrit 500ms d'audio
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     std::cout << "fin lecture" << std::endl;
     delete [] buff;
