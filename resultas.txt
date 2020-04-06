@@ -1,0 +1,29 @@
+resultats avec un delay de 500ms entre chaque lecture et une ecriture de buffer de 500ms.
+
+ogg size: 1000ms -> temps avant disponibilité du fichier: 1016.73ms latence: 1017.03ms
+ogg size: 800ms -> temps avant disponibilité du fichier: 1018.58ms latence: 1019ms
+ogg size: 600ms -> temps avant disponibilité du fichier: 512.802ms latence: 513.16ms
+ogg size: 500ms -> temps avant disponibilité du fichier: 512.067ms latence: -1.58616e+12ms
+ogg size: 400ms -> temps avant disponibilité du fichier: 512.319ms latence: -1.58616e+12ms
+ogg size: 200ms -> temps avant disponibilité du fichier: 3.241ms latence: 1512.18ms
+ogg size: 100ms -> temps avant disponibilité du fichier: 3.416ms latence: -1.58616e+12ms
+
+resultats sans delay.
+
+ogg size: 1000ms -> temps avant disponibilité du fichier: 18.984ms latence: 19.22ms
+ogg size: 800ms -> temps avant disponibilité du fichier: 15.816ms latence: 16.122ms
+ogg size: 600ms -> temps avant disponibilité du fichier: 11.175ms latence: 11.512ms
+ogg size: 500ms -> temps avant disponibilité du fichier: 13.848ms latence: 520.497ms
+ogg size: 400ms -> temps avant disponibilité du fichier: 3.02ms latence: 510.291ms
+ogg size: 200ms -> temps avant disponibilité du fichier: 3.098ms latence: 509.82ms
+ogg size: 100ms -> temps avant disponibilité du fichier: 2.308ms latence: 508.892ms
+
+resultats avec un delay de 500ms entre chaque lecture et une ecriture de buffer de 50ms
+
+ogg size: 1000ms -> temps avant disponibilité du fichier: 1019.51ms latence: 1019.75ms
+ogg size: 800ms -> temps avant disponibilité du fichier: 519.149ms latence: 519.366ms
+ogg size: 600ms -> temps avant disponibilité du fichier: 511.698ms latence: 511.969ms
+ogg size: 500ms -> temps avant disponibilité du fichier: 515.582ms latence: 515.809ms
+ogg size: 400ms -> temps avant disponibilité du fichier: 3.252ms latence: 3.343ms
+ogg size: 200ms -> temps avant disponibilité du fichier: 4.339ms latence: 4.463ms
+ogg size: 100ms -> temps avant disponibilité du fichier: 3.257ms latence: 3.395ms

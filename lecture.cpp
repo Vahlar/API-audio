@@ -41,7 +41,7 @@ void lecture(std::chrono::system_clock::time_point *pTime0){
         exit(1);
     }
     //set ogg page latency
-    double latency = 100;
+    double latency = 1000;
     double* pLatency = &latency;
     sf_command(outFile, SFC_SET_OGG_PAGE_LATENCY_MS, pLatency, sizeof (pLatency));
 
@@ -57,9 +57,6 @@ void lecture(std::chrono::system_clock::time_point *pTime0){
 
     //lecture du fichier jusqu'à la fin
     while ((frameIn = sf_read_float(inFile, &buff[0], frameSize)) > 0){
-
-        //toutes les 500ms on écrit 500ms d'audio
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
         if(i == 0){
             //prise tu temps t0
@@ -77,6 +74,9 @@ void lecture(std::chrono::system_clock::time_point *pTime0){
         //ecriture des datas
         frameOut = sf_write_float(outFile, &buff[0], frameSize);
         sf_write_sync(outFile);
+
+        //toutes les 500ms on écrit 500ms d'audio
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
     }
     std::cout << "fin lecture" << std::endl;
 }
