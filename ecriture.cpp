@@ -49,10 +49,10 @@ void ecriture(std::chrono::system_clock::time_point* pTime1, std::chrono::system
     int totFrames = 0;
 
     //creation du buffer pour les datas
-    float *buff = new float[frameSize];
+    std::vector<float> buff(frameSize);
 
     //lecture en continue du fichier
-    while ((frameIn = sf_read_float(inFile, buff, frameSize)) > -1){
+    while ((frameIn = sf_read_float(inFile, &buff[0], frameSize)) > -1){
 
         //prise du temps t2
         if((i == 0) && (frameIn == frameSize)){
@@ -71,7 +71,6 @@ void ecriture(std::chrono::system_clock::time_point* pTime1, std::chrono::system
             //on arrete d'attendre au bout d'un certain temps
             if(k == 10){
                 std::cout << "time out, fin ecriture" << std::endl;
-                delete [] buff;
                 return;
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -85,7 +84,7 @@ void ecriture(std::chrono::system_clock::time_point* pTime1, std::chrono::system
             sf_seek(inFile, totFrames, 0);
 
             //on verifie si de nouvelles datas sont disponible
-            frameIn = sf_read_float(inFile, buff, frameSize);
+            frameIn = sf_read_float(inFile, &buff[0], frameSize);
         }
         if(k > 0){
             std::cout << "reprise ecriture" << std::endl;
@@ -93,7 +92,7 @@ void ecriture(std::chrono::system_clock::time_point* pTime1, std::chrono::system
             k = 0;
         }
         //ecriture des datas
-        frameOut = sf_write_float(outFile, buff, frameIn);
+        frameOut = sf_write_float(outFile, &buff[0], frameIn);
         sf_write_sync(outFile);
     }
 }
